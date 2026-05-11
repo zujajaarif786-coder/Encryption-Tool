@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CipherLab Pro</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="bg"></div>
+<div id="ta" class="tarea"></div>
+
+<div class="wrap">
+
+  <!-- Header -->
+  <div class="hdr">
+    <div>
+      <div class="eyebrow"><div class="ey-line"></div><span class="ey-txt">Information Security · Academic Project</span></div>
+      <h1>Cipher<em>Lab</em> Pro</h1>
+      <p class="hdr-sub">XOR · AES-256 · Caesar · File Encryption · Image Export</p>
+    </div>
+    <div class="hdr-right">
+      <div class="mode-pill" id="modePill">MODE · XOR</div>
+      <div class="ver">BS Software Engineering · v3.0</div>
+      <div class="api-status" id="apiStatus">⚪ Checking server…</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" id="tab-xor" onclick="go('xor')">
+      <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9 9l6 6M15 9l-6 6"/></svg>XOR
+    </button>
+    <button class="tab" id="tab-aes" onclick="go('aes')">
+      <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>AES-256
+    </button>
+    <button class="tab" id="tab-caesar" onclick="go('caesar')">
+      <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7"/></svg>Caesar
+    </button>
+    <button class="tab" id="tab-file" onclick="go('file')">
+      <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>File
+    </button>
+    <button class="tab" id="tab-compare" onclick="go('compare')">
+      <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Compare
+    </button>
+    <button class="tab" id="tab-image" onclick="go('image')">
+      <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Image
+    </button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat"><div class="sl">Characters</div><div class="sv" id="sC">0</div><div class="ss">plain text</div></div>
+    <div class="stat"><div class="sl">Key Strength</div><div class="sv" id="sK" style="font-size:.72rem;padding-top:.18rem">—</div><div class="ss" id="sKs">not set</div></div>
+    <div class="stat"><div class="sl">Output</div><div class="sv" id="sO">0</div><div class="ss" id="sOs">bytes</div></div>
+    <div class="stat"><div class="sl">Status</div><div class="sv" id="sSt" style="font-size:.72rem;padding-top:.18rem">Idle</div><div class="ss" id="sSs">ready</div></div>
+  </div>
+
+  <!-- Key card -->
+  <div class="kcard" id="keyCard">
+    <div class="kr">
+      <span class="kl">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        Secret Key
+      </span>
+      <div class="km"><span class="klen" id="kLen">0 chars</span><span class="kb kb0" id="kBdg">None</span></div>
+    </div>
+    <div class="ki">
+      <div class="kicon"><svg width="13" height="13" fill="none" stroke="#c9a84c" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <input class="kf" id="keyInput" type="password" placeholder="Enter your secret key…" autocomplete="off" spellcheck="false"/>
+      <button class="vbtn" id="visBtn">
+        <svg id="eyeSvg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+    <div class="sbar"><div class="sfill" id="sFill"></div></div>
+  </div>
+
+  <!-- Caesar shift -->
+  <div class="crow" id="caesarRow" style="display:none">
+    <span class="cl">Shift Amount</span>
+    <input class="ci" id="shiftInput" type="number" min="1" max="25" value="3"/>
+    <span class="cprev" id="shiftPrev">A &#8594; D</span>
+    <span class="cnote">1&#8211;25 &middot; wraps at Z</span>
+  </div>
+
+  <!-- Text section -->
+  <div id="textSec">
+    <div class="grid">
+      <div class="panel">
+        <div class="phd"><div class="pd" style="background:#d4a843"></div><span class="pt">Plain Text</span><span class="pp" id="plainPill">0 chars</span></div>
+        <div class="pb">
+          <textarea class="ta" id="plainIn" placeholder="Type your message here&#8230;&#10;&#10;Example: Hello, World!" spellcheck="false"></textarea>
+          <div class="brow">
+            <button class="btn b-ink" onclick="doEncrypt()">
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Encrypt
+            </button>
+            <button class="btn b-ghost" onclick="clearAll()">Clear</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="phd"><div class="pd" style="background:#4a7c6f"></div><span class="pt">Cipher Output</span><span class="pp" id="hexPill">0</span></div>
+        <div class="pb">
+          <textarea class="ta mono" id="hexOut" readonly placeholder="Encrypted output appears here&#8230;"></textarea>
+          <div class="brow">
+            <button class="btn b-sage" onclick="doDecrypt()">
+              <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>Decrypt
+            </button>
+            <button class="btn b-ghost" id="copyBtn" onclick="copyHex()">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="decWrap" style="display:none;margin-bottom:.9rem">
+      <div class="panel">
+        <div class="phd"><div class="pd" style="background:#4a7c6f"></div><span class="pt">Decrypted Result</span></div>
+        <div class="pb">
+          <div class="rbox has" id="decOut"></div>
+          <div id="verEl"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="trace" id="traceBox">
+      <div class="thd"><span class="ttitle">Bit-level XOR trace &#8212; first character</span><span class="kb kb2" id="traceBdg">char[0]</span></div>
+      <div class="tcards" id="traceCards"></div>
+      <div class="bwrap" id="bitsWrap"></div>
+    </div>
+  </div>
+
+  <!-- File section -->
+  <div class="sc" id="fileSec" style="display:none">
+    <div class="shd"><div class="sbar2" style="background:linear-gradient(#c9a84c,#d4820a)"></div><span class="stitle">File Encryption &#8212; XOR Cipher (client-side)</span></div>
+    <div class="fdrop" id="fileDrop" onclick="document.getElementById('fileIn').click()">
+      <div class="ficon">
+        <svg width="17" height="17" fill="none" stroke="#c9a84c" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      </div>
+      <div class="ftitle">Drop a file here or click to browse</div>
+      <div class="fsub">Any file type &middot; Maximum 5 MB</div>
+    </div>
+    <input type="file" id="fileIn" onchange="loadFile(event)"/>
+    <div class="fnbar" id="fnBar"></div>
+    <div class="fkrow"><span class="fkl">Key</span><input class="fki" id="fileKey" placeholder="Enter encryption / decryption key&#8230;" spellcheck="false"/></div>
+    <div class="brow" style="margin-top:.8rem">
+      <button class="btn b-ink" id="fEncBtn" onclick="encFile()" disabled>
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Encrypt &amp; Download
+      </button>
+      <button class="btn b-sage" id="fDecBtn" onclick="decFile()" disabled>
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>Decrypt &amp; Download
+      </button>
+    </div>
+    <div id="fStatus" style="margin-top:.65rem;font-size:.72rem;color:var(--mist)"></div>
+  </div>
+
+  <!-- Compare section -->
+  <div class="sc" id="compareSec" style="display:none">
+    <div class="shd"><div class="sbar2" style="background:linear-gradient(#1e2330,#4a5568)"></div><span class="stitle">Algorithm Comparison</span></div>
+    <div class="cset">
+      <div>
+        <div class="flbl">Input Text</div>
+        <textarea class="ta" id="cmpIn" placeholder="Enter text to encrypt with all three algorithms&#8230;" style="height:80px" spellcheck="false"></textarea>
+      </div>
+      <div>
+        <div class="flbl">XOR / AES Key</div>
+        <input class="cf" id="cmpKey" value="SecretKey" spellcheck="false"/>
+        <div class="flbl">Caesar Shift</div>
+        <input class="cf" id="cmpShift" type="number" min="1" max="25" value="3" style="width:76px;display:inline-block"/>
+      </div>
+    </div>
+    <div class="brow" style="margin-bottom:.8rem">
+      <button class="btn b-ink" onclick="doCompare()">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Run Comparison
+      </button>
+    </div>
+    <div class="cgrid">
+      <div class="cc" id="cc-xor">
+        <div class="cchd"><div class="ccd" style="background:var(--gold)"></div><span class="ccn">XOR Cipher</span></div>
+        <div class="ccout" id="co-xor">Run comparison to see output&#8230;</div>
+        <span class="ccb" style="background:#faf6ec;color:var(--gold-d);border:1px solid var(--gold-l)">Symmetric &middot; Key-based</span>
+      </div>
+      <div class="cc" id="cc-aes">
+        <div class="cchd"><div class="ccd" style="background:var(--slate)"></div><span class="ccn">AES-256-CBC</span></div>
+        <div class="ccout" id="co-aes">Run comparison to see output&#8230;</div>
+        <span class="ccb" style="background:var(--ghost);color:var(--slate);border:1px solid var(--veil)">Industry Standard</span>
+      </div>
+      <div class="cc" id="cc-caesar">
+        <div class="cchd"><div class="ccd" style="background:var(--sage)"></div><span class="ccn">Caesar Cipher</span></div>
+        <div class="ccout" id="co-caesar">Run comparison to see output&#8230;</div>
+        <span class="ccb" style="background:#f0faf6;color:var(--sage-d);border:1px solid var(--sage-l)">Historical &middot; No Key</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image section -->
+  <div class="sc" id="imageSec" style="display:none">
+    <div class="shd"><div class="sbar2" style="background:linear-gradient(#8b4a5c,#b05570)"></div><span class="stitle">Export Cipher Text as Image</span></div>
+    <div class="iopts">
+      <span class="ol">Theme:</span>
+      <div class="sw sel" style="background:#0f1117" onclick="setBg(this,'#0f1117','#e8d5a3','#c9a84c','dark')"></div>
+      <div class="sw" style="background:#1a1a2e" onclick="setBg(this,'#1a1a2e','#c4b5fd','#9d8fe8','purple')"></div>
+      <div class="sw" style="background:#0d2418" onclick="setBg(this,'#0d2418','#a7f3d0','#34d399','green')"></div>
+      <div class="sw" style="background:#f8f9fb;border:1px solid #dce1e9" onclick="setBg(this,'#f8f9fb','#1e2330','#c9a84c','light')"></div>
+      <div class="sw" style="background:#1c0e09" onclick="setBg(this,'#1c0e09','#fde8c8','#e8a020','amber')"></div>
+      <span class="ol" style="margin-left:.25rem">Title:</span>
+      <input class="iti" id="imgTitle" value="Encrypted Message"/>
+    </div>
+    <div style="margin-bottom:.8rem">
+      <div class="flbl" style="margin-bottom:.35rem">Cipher text (auto-filled after encrypting)</div>
+      <textarea class="ta mono" id="imgCipher" placeholder="Paste cipher text here or encrypt from any tab first&#8230;" style="height:70px"></textarea>
+    </div>
+    <div class="cwrap"><div class="cph" id="canvasPh">Generate image to preview the export</div><canvas id="imgCanvas"></canvas></div>
+    <div class="brow" style="margin-top:.8rem">
+      <button class="btn b-gold" onclick="genImg()">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Generate Image
+      </button>
+      <button class="btn b-teal" id="imgDl" disabled onclick="dlImg()">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download PNG
+      </button>
+    </div>
+  </div>
+
+  <!-- Tips -->
+  <div class="divider" style="margin:1.4rem 0 1.1rem"></div>
+  <div class="tips">
+    <div class="tip"><div class="tic" style="background:#faf6ec;border:1px solid var(--gold-l)"><svg width="12" height="12" fill="none" stroke="#c9a84c" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9 9l6 6M15 9l-6 6"/></svg></div><div><h4>XOR Cipher</h4><p>Self-inverse &#8212; (P&#8853;K)&#8853;K&#8201;=&#8201;P always.</p></div></div>
+    <div class="tip"><div class="tic" style="background:var(--ghost);border:1px solid var(--veil)"><svg width="12" height="12" fill="none" stroke="#4a5568" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div><h4>AES-256</h4><p>CBC mode, random IV per session.</p></div></div>
+    <div class="tip"><div class="tic" style="background:#f0faf6;border:1px solid var(--sage-l)"><svg width="12" height="12" fill="none" stroke="#4a7c6f" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7"/></svg></div><div><h4>Caesar</h4><p>Shift cipher &#8212; educational, easily broken.</p></div></div>
+    <div class="tip"><div class="tic" style="background:#fdf5f7;border:1px solid var(--rose-l)"><svg width="12" height="12" fill="none" stroke="#8b4a5c" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div><h4>Image Export</h4><p>5 colour themes &middot; downloads as PNG.</p></div></div>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
